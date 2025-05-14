@@ -12,13 +12,13 @@ func main() {
 	port := 8080
 
 	http.HandleFunc("/orders", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Handling incoming orders")
+		logReqDeatils(r)
+		fmt.Fprintf(w, "Handling incoming orders\n")
 	})
 	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Handling  users")
 	})
 
-	//Load the TLS
 	cert := "cert.pem"
 	key := "key.pem"
 
@@ -32,8 +32,6 @@ func main() {
 		TLSConfig: tlsConfig,
 	}
 
-	//em=nable http2
-
 	http2.ConfigureServer(server, &http2.Server{})
 
 	fmt.Println("Server is running on port:", port)
@@ -41,12 +39,8 @@ func main() {
 	err := server.ListenAndServeTLS(cert, key)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("error in starting server....", err)
 	}
-
-	//http 1.1
-	// err := http.ListenAndServe(fmt.Sprintf(":%d",port),nil)
-
 }
 
 func logReqDeatils(r *http.Request) {
@@ -60,13 +54,13 @@ func logReqDeatils(r *http.Request) {
 	} else {
 		fmt.Println("received req without tls")
 	}
-
 }
 
 func getTLSVersionName(version uint16) string {
 	switch version {
 	case tls.VersionTLS10:
 		return "tls 1.0"
+
 	case tls.VersionTLS11:
 		return "tls 1.1"
 
@@ -77,7 +71,7 @@ func getTLSVersionName(version uint16) string {
 		return "tls 1.3"
 
 	default:
-		return "Unknown tls version"
+		return "Unknown TLS version"
 	}
 
 }
