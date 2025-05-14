@@ -1,0 +1,13 @@
+# Ignore PEM files that contain private keys and certificates
+*.pem
+
+# Or you can specifically list the filenames
+key.pem
+cert.pem
+
+# You may also want to ignore the entire directory if they are stored in a specific folder
+/secrets/
+
+
+# Ignore all PEM files in the "secrets" folder
+/secrets/*.pem
