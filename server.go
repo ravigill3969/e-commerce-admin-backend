@@ -49,3 +49,35 @@ func main() {
 
 }
 
+func logReqDeatils(r *http.Request) {
+	httpVersion := r.Proto
+	fmt.Println("received req with http vesion", httpVersion)
+
+	if r.TLS != nil {
+		tlsVesrion := getTLSVersionName(r.TLS.Version)
+		fmt.Println("received req with tls vesion", tlsVesrion)
+
+	} else {
+		fmt.Println("received req without tls")
+	}
+
+}
+
+func getTLSVersionName(version uint16) string {
+	switch version {
+	case tls.VersionTLS10:
+		return "tls 1.0"
+	case tls.VersionTLS11:
+		return "tls 1.1"
+
+	case tls.VersionTLS12:
+		return "tls 1.2"
+
+	case tls.VersionTLS13:
+		return "tls 1.3"
+
+	default:
+		return "Unknown tls version"
+	}
+
+}
