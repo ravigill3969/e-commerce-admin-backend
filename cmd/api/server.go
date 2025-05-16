@@ -1,7 +1,7 @@
 package main
 
 import (
-	"admin-backend/internal/api/middlerwares"
+	mw "admin-backend/internal/api/middlerwares"
 	"crypto/tls"
 	"fmt"
 	"io"
@@ -48,7 +48,7 @@ func main() {
 
 	server := &http.Server{
 		Addr:      fmt.Sprintf(":%d", port),
-		Handler:   middlerwares.Cors(mux),
+		Handler:   mw.ResponseTimeMiddlerware(mw.SecurityHeader(mw.Cors(mux))),
 		TLSConfig: tlsConfig,
 	}
 
