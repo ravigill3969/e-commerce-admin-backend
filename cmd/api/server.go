@@ -48,7 +48,7 @@ func main() {
 
 	server := &http.Server{
 		Addr:      fmt.Sprintf(":%d", port),
-		Handler:   mw.ResponseTimeMiddlerware(mw.SecurityHeader(mw.Cors(mux))),
+		Handler:   mw.Compression(mw.ResponseTimeMiddlerware(mw.SecurityHeader(mw.Cors(mux)))),
 		TLSConfig: tlsConfig,
 	}
 
