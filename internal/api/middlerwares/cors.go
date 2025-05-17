@@ -1,6 +1,8 @@
 package middlerwares
 
-import "net/http"
+import (
+	"net/http"
+)
 
 var allowedOrigins = []string{
 	"https://localhost:8080",
