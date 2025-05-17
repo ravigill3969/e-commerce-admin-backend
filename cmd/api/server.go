@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"golang.org/x/net/http2"
 )
@@ -46,9 +47,11 @@ func main() {
 		MinVersion: tls.VersionTLS12,
 	}
 
+	rl := mw.NewRateLimiter(5, time.Minute)
+
 	server := &http.Server{
 		Addr:      fmt.Sprintf(":%d", port),
-		Handler:   mw.Compression(mw.ResponseTimeMiddlerware(mw.SecurityHeader(mw.Cors(mux)))),
+		Handler:   rl.Middlerware(mw.Compression(mw.ResponseTimeMiddlerware(mw.SecurityHeader(mw.Cors(mux))))),
 		TLSConfig: tlsConfig,
 	}
 

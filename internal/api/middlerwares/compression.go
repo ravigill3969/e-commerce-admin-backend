@@ -2,7 +2,6 @@ package middlerwares
 
 import (
 	"compress/gzip"
-	"fmt"
 	"net/http"
 	"strings"
 )
@@ -23,7 +22,7 @@ func Compression(next http.Handler) http.Handler {
 		w = &gzipResponseWriter{ResponseWriter: w, Writer: gz}
 
 		next.ServeHTTP(w, r)
-		fmt.Println("compressing this garbage")
+		// fmt.Println("compressing this garbage")
 	})
 }
 
