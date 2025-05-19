@@ -4,7 +4,6 @@ import (
 	mw "admin-backend/internal/api/middlerwares"
 	"crypto/tls"
 	"fmt"
-	"io"
 	"net/http"
 	"time"
 
@@ -20,14 +19,19 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		fmt.Fprintln(w, "GET: Returning user info")
 	case http.MethodPost:
-		body, err := io.ReadAll(r.Body)
+		fmt.Println(r.URL.Query())
+		fmt.Println(r.URL.Query().Get("name"))
+
+		//parse from data
+
+		err := r.ParseForm()
 		if err != nil {
-			http.Error(w, "Error reading body", http.StatusBadRequest)
 			return
 		}
-		defer r.Body.Close()
 
-		fmt.Fprintf(w, "POST: Received user data: %s\n", string(body))
+		fmt.Println(r.Form)
+
+		w.Write([]byte("Post method in execution"))
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
