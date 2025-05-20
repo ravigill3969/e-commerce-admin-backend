@@ -1,7 +1,6 @@
 package middlerwares
 
 import (
-	"fmt"
 	"net/http"
 	"sync"
 	"time"
@@ -41,7 +40,7 @@ func (rl *rateLimiter) Middlerware(next http.Handler) http.Handler {
 		visitorIP := r.RemoteAddr
 		rl.visitors[visitorIP]++
 
-		fmt.Println(rl)
+		// fmt.Println(rl)
 
 		if rl.visitors[visitorIP] > rl.limit {
 			http.Error(w, "Too many request", http.StatusTooManyRequests)
