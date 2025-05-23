@@ -2,12 +2,15 @@ package main
 
 import (
 	mw "admin-backend/internal/api/middlerwares"
+	"admin-backend/internal/api/repository/sqlconnect"
 	"crypto/tls"
 	"fmt"
 	"net/http"
+	"os"
 
 	// "time"
 
+	"github.com/joho/godotenv"
 	"golang.org/x/net/http2"
 )
 
@@ -42,7 +45,18 @@ func teachersHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	port := 8080
+
+	err := godotenv.Load()
+
+	if err != nil {
+		return
+	}
+	_, err = sqlconnect.ConnectDB()
+
+	if err != nil {
+		fmt.Println("Unable to connect", err)
+		return
+	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", rootHandler)
@@ -66,10 +80,10 @@ func main() {
 
 	// secureMux := mw.Cors(rl.Middlerware(mw.ResponseTimeMiddlerware(mw.Compression(mw.Hpp(hppOptions)(mw.SecurityHeader(mux))))))
 	// secureMux := applyMiddleware(mux, mw.Hpp(hppOptions), mw.Compression, mw.SecurityHeader, mw.ResponseTimeMiddlerware, rl.Middlerware, mw.Cors)
-
+	port := os.Getenv("API_PORT")
 	secureMux := mw.SecurityHeader(mux)
 	server := &http.Server{
-		Addr:      fmt.Sprintf(":%d", port),
+		Addr:      port,
 		Handler:   secureMux,
 		TLSConfig: tlsConfig,
 	}
@@ -78,7 +92,7 @@ func main() {
 
 	fmt.Println("Server is running on port:", port)
 
-	err := server.ListenAndServeTLS(cert, key)
+	err = server.ListenAndServeTLS(cert, key)
 	if err != nil {
 		fmt.Println("Error starting the server:", err)
 	}
@@ -87,9 +101,9 @@ func main() {
 // Middleware is a fn  that wraps on http.handler with addiotanial fntionality
 type Middlerware func(http.Handler) http.Handler
 
-func applyMiddleware(handler http.Handler, middlerwares ...Middlerware) http.Handler {
-	for _, middlerware := range middlerwares {
-		handler = middlerware(handler)
-	}
-	return handler
-}
+// func applyMiddleware(handler http.Handler, middlerwares ...Middlerware) http.Handler {
+// 	for _, middlerware := range middlerwares {
+// 		handler = middlerware(handler)
+// 	}
+// 	return handler
+// }

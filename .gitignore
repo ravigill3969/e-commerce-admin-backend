@@ -11,3 +11,6 @@ cert.pem
 
 # Ignore all PEM files in the "secrets" folder
 /secrets/*.pem
+
+.env
+
